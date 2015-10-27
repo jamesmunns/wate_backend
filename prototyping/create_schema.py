@@ -10,6 +10,7 @@ def create_user_table(cursor):
     CREATE TABLE users (
       id serial PRIMARY KEY,
       name text NOT NULL,
+      username text NOT NULL,
       email citext UNIQUE NOT NULL,
       joindate date NOT NULL);
     """

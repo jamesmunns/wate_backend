@@ -8,28 +8,29 @@ from decimal import Decimal
 ff = Factory.create()
 
 def generate_users(cursor):
-  min_users = 3
-  max_users = 10
+  min_users = 10
+  max_users = 100
 
   num_users = randint(min_users, max_users)
 
   for _ in xrange(num_users):
-    name  = ff.name()
-    email = ff.email()
-    jdate = date.today() - timedelta(days=randint(5,100))
+    name     = ff.name()
+    email    = ff.email()
+    username = ff.user_name()
+    jdate    = date.today() - timedelta(days=randint(5,100))
 
     # print name, email, jdate,
 
-    min_sample = 5
-    max_sample = 10
+    min_sample = 20
+    max_sample = 100
     num_sample = randint( min_sample, max_sample )
 
     user_cmd = """
-      INSERT INTO users ( name, email, joindate )
-      VALUES ( %s, %s, %s );
+      INSERT INTO users ( name, email, username, joindate )
+      VALUES ( %s, %s, %s, %s );
       """
 
-    cursor.execute( user_cmd, [ name, email, jdate ] )
+    cursor.execute( user_cmd, [ name, email, username, jdate ] )
 
     # Get userid
     id_fetch_cmd = """
