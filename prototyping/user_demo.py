@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 import psycopg2 as pg
 import getpass
 from flask import g
@@ -27,21 +27,25 @@ def user_data(username=None):
         WHERE weights.user_id = users.id
           and users.username = %s;
       """
+    user = u""
+    template_array = u""
 
     with get_db().cursor() as cur:
         cur.execute(get_user_name, [username])
         user = cur.fetchall()[0]
-        retval += "Username: {} | User Name: {}<br><br>".format( user[0], user[1] )
+        #username = user
+        #retval += "Username: {} | User Name: {}<br><br>".format( user[0], user[1] )
         
         cur.execute(get_all_wgt, [username])
         for wgt in cur.fetchall():
-            retval += "{} | {}<br>".format(wgt[0], wgt[1])
+            #retval += "{} | {}<br>".format(wgt[0], wgt[1])
+            template_array += u"[new Date({}, {}, {}),{}],".format(wgt[1].year,wgt[1].month-1,wgt[1].day, wgt[0])
+        template_array=template_array.rstrip(',') 
+    #if retval == "":
+    #    retval = "Unknown user error!", 520
 
-    if retval == "":
-        retval = "Unknown user error!", 520
-
-    return retval
-  
+    #return retval
+    return render_template('usergraph.html', username=username, date_wgt_array=template_array)
 
 @app.route('/')
 def hello_world():
@@ -71,4 +75,4 @@ def teardown_db(exception):
         db.close()
 
 if __name__ == '__main__':    
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0')
