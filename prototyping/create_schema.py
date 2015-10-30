@@ -8,11 +8,16 @@ database = "wate"
 def create_user_table(cursor):
   user_schema = """
     CREATE TABLE users (
-      id serial PRIMARY KEY,
-      name text NOT NULL,
-      username text NOT NULL,
-      email citext UNIQUE NOT NULL,
-      joindate date NOT NULL);
+      id               serial PRIMARY KEY,
+      name             text NOT NULL,
+      username         text NOT NULL,
+      email            citext UNIQUE NOT NULL,
+      joindate         date NOT NULL,
+      passhash         character (60),
+      use_metric_units boolean,
+      emails_disabled  boolean
+    );
+
     """
   cursor.execute(user_schema)
 

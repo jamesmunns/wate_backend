@@ -4,6 +4,7 @@ from datetime import date, timedelta
 import psycopg2
 import getpass
 from decimal import Decimal
+import bcrypt
 
 ff = Factory.create()
 
@@ -12,6 +13,8 @@ def generate_users(cursor):
   max_users = 100
 
   num_users = randint(min_users, max_users)
+
+  ofile = open('users.txt', 'a')
 
   for _ in xrange(num_users):
     name     = ff.name()
@@ -26,11 +29,16 @@ def generate_users(cursor):
     num_sample = randint( min_sample, max_sample )
 
     user_cmd = """
-      INSERT INTO users ( name, email, username, joindate )
-      VALUES ( %s, %s, %s, %s );
+      INSERT INTO users ( name, email, username, joindate, passhash )
+      VALUES ( %s, %s, %s, %s, %s );
       """
 
-    cursor.execute( user_cmd, [ name, email, username, jdate ] )
+    password = ff.password().encode('utf-8')
+    passhash = bcrypt.hashpw(password, bcrypt.gensalt())
+
+    ofile.write("{} => {} => {}\n".format(email, password, passhash))
+
+    cursor.execute( user_cmd, [ name, email, username, jdate, passhash ] )
 
     # Get userid
     id_fetch_cmd = """
@@ -60,6 +68,8 @@ def generate_users(cursor):
       cursor.execute( wgt_cmd, [ userid, weight, wdate ] )      
 
     # print ""
+
+  ofile.close()
 
 db = "wate"
 
