@@ -3,7 +3,7 @@ import psycopg2 as pg
 import getpass
 from flask import g
 
-username = getpass.getuser()
+username = "postgres"
 password = getpass.getpass("Password for {}: ".format(username))
 dbname   = "wate"
 
@@ -65,7 +65,7 @@ def hello_world():
 def get_db():
     db = getattr(g, '_dbc', None)
     if db is None:
-        db = g._dbc = pg.connect(dbname=dbname, user=username, password=password)
+        db = g._dbc = pg.connect(dbname=dbname, user=username, password=password, host='127.0.0.1')
     return db
 
 @app.teardown_appcontext

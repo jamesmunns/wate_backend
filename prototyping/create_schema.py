@@ -1,7 +1,7 @@
 import psycopg2
 import getpass
 
-username = getpass.getuser()
+username = "postgres"
 password = getpass.getpass("Database password for {}: ".format(username))
 database = "wate"
 
@@ -31,7 +31,7 @@ def create_weight_table(cursor):
     """
   cursor.execute(weight_schema)  
 
-with psycopg2.connect(dbname=database, user=username, password=password) as conn:
+with psycopg2.connect(dbname=database, user=username, password=password, host="127.0.0.1") as conn:
   with conn.cursor() as cur:
     create_user_table(cur)
     create_weight_table(cur)

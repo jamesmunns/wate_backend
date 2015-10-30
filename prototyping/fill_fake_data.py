@@ -73,6 +73,10 @@ def generate_users(cursor):
 
 db = "wate"
 
-with psycopg2.connect( dbname=db, user=getpass.getuser(), password=getpass.getpass("Password for user {}: ".format(getpass.getuser()))) as conn:
+with psycopg2.connect( dbname=db,
+                       user="postgres",
+                       password=getpass.getpass("Password for user {}: ".format(getpass.getuser())),
+                       host="127.0.0.1"
+                     ) as conn:
   with conn.cursor() as cur:
     generate_users(cur)
